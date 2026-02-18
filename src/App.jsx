@@ -1,25 +1,6 @@
-// import './App.css'
-// import { Routes, Route } from "react-dom";
-// import Layout from './component/layout.jsx';
-// import Home from "./pages/home.jsx";
-// import Profile from "./pages/profile";
-// import Upload from "./pages/Upload";
-// import Watch from "./pages/Watch";
 
-// function App(){
-//   return (
-//     <Layout>
-//       <Routes>
-//       <Route path="/" element={<Home />}/>
-//       <Route path="/watch/:id" element={<Watch />}/>
-//       <Route path="/upload" element={<Upload />}/>
-//       <Route path="/profiles" element={<Profile />}/> 
-//       </Routes>
-//     </Layout>
-//   )
-// }export default App;
 import { Routes, Route } from "react-router-dom";
-import Layout from "./component/layout";  // ✅ check path
+import Layout from "./component/layout";  // 
 
 import Home from "./pages/home";
 import Profile from "./pages/profile";
@@ -31,7 +12,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="watch/:id" element={<Watch />} />
+       <Route path="watch/:id" element={<Watch />} />
+
         <Route path="upload" element={<Upload />} />
         <Route path="profiles" element={<Profile />} />
       </Route>
@@ -39,4 +21,4 @@ function App() {
   );
 }
 
-export default App; // ✅ default export
+ export default App; // ✅ default export

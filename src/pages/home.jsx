@@ -1,71 +1,92 @@
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { fetchPopularVideos, fetchSearchVideos } from "../api/youtube";
-import styles from "./Home.module.css";
+
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { fetchPopularVideos, searchVideos } from "../api/youtube";
+import styles from "./home.module.css";
 
 function Home() {
   const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [nextPageToken, setNextPageToken] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search");
 
-  // Get search query from URL
-  const queryParams = new URLSearchParams(location.search);
-  const searchQuery = queryParams.get("search");
-
-  useEffect(() => {
-    const getVideos = async () => {
+  // 🔥 Load Videos Function
+  const loadVideos = async (pageToken = "", isLoadMore = false) => {
+    try {
       setLoading(true);
       let data;
-      if (searchQuery) {
-        data = await fetchSearchVideos(searchQuery);
-      } else {
-        data = await fetchPopularVideos();
-      }
-      setVideos(data);
-      setLoading(false);
-    };
-    getVideos();
-  }, [searchQuery]); // Run whenever search changes
 
-  if (loading) return <p>Loading videos...</p>;
+      if (searchQuery) {
+        data = await searchVideos(searchQuery, pageToken);
+      } else {
+        data = await fetchPopularVideos(pageToken);
+      }
+
+      if (isLoadMore) {
+        // append videos
+        setVideos((prev) => [...prev, ...data.items]);
+      } else {
+        // first load
+        setVideos(data.items);
+      }
+
+      setNextPageToken(data.nextPageToken || "");
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔁 When Search Changes
+  useEffect(() => {
+    setVideos([]);
+    loadVideos();
+  }, [searchQuery]);
 
   return (
-    <div className={styles.videoContainer}>
-      {videos.map((video) => {
-        const videoId = video.id.videoId || video.id;
-        return (
-          <div
-            key={videoId}
-            className={styles.videoCard}
-            onClick={() => navigate(`/watch/${videoId}`)}
-          >
-            <img
-              src={video.snippet.thumbnails.medium.url}
-              alt={video.snippet.title}
-            />
-            <div className={styles.videoInfo}>
-              <h4>{video.snippet.title}</h4>
-              <p className="channel">{video.snippet.channelTitle}</p>
-              <p className="extra">
-                {video.statistics
-                  ? `${video.statistics.viewCount} views • ${new Date(
-                      video.snippet.publishedAt
-                    ).toLocaleDateString()}`
-                  : ""}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-      <pagination 
-      currentPage={page}
-      hasNext={!!nextToken}
-      hasPrev={prev >1}
-      onNext={handleNext}
-      onPrev={handlePrev}
-      />
+    <div className={styles["home-container"]}>
+      <h2>
+        {searchQuery
+          ? `🔎 Results for "${searchQuery}"`
+          : " Trending Videos"}
+      </h2>
+
+      <div className={styles["video-grid"]}>
+        {videos.map((video) => {
+          const videoId = video.id.videoId || video.id;
+
+          return (
+            <Link
+              to={`/watch/${videoId}`}
+              key={videoId}
+              className={styles["video-card"]}
+            >
+              <img
+                src={video.snippet.thumbnails.medium.url}
+                alt={video.snippet.title}
+              />
+              <div className={styles["video-info"]}>
+                <h4>{video.snippet.title}</h4>
+                <p>{video.snippet.channelTitle}</p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* 🔥 LOAD MORE BUTTON */}
+      {nextPageToken && (
+        <button
+          onClick={() => loadVideos(nextPageToken, true)}
+          disabled={loading}
+          className={styles["load-more"]}
+        >
+          {loading ? "Loading..." : "Load More"}
+        </button>
+      )}
     </div>
   );
 }

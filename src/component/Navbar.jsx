@@ -1,11 +1,15 @@
 // Navbar.jsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 
 function Navbar() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    // localStorage operations can be added here if needed
+  }, [])
 
   const handleSearch = (e) => {
     e.preventDefault();
