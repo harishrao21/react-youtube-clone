@@ -1,0 +1,80 @@
+/* Navbar container */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* Brand / logo */
+.header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff0000; /* YouTube-style red */
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Search form container */
+.searchForm {
+  display: flex;
+  flex: 1;
+  max-width: 500px;
+  margin: 0 20px;
+}
+
+/* Input field */
+.searchForm input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 2px 0 0 2px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Search button */
+.searchForm button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-left: 0;
+  border-radius: 0 2px 2px 0;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.searchForm button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Optional: hide search button text on small screens */
+@media (max-width: 480px) {
+  .searchForm {
+    max-width: 200px;
+  }
+  .searchForm button {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}
+
+/* Optional: make navbar sticky and compact */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px 15px;
+    gap: 8px;
+  }
+  .searchForm {
+    margin: 0;
+  }
+}

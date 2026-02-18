@@ -1,0 +1,18 @@
+/* Full app container */
+.container {
+  display: flex;
+  flex-direction: column; /* Navbar top */
+  height: 100vh;
+}
+
+.body {
+  display: flex;
+  flex: 1; /* remaining space after navbar */
+  overflow: hidden;
+}
+
+.content {
+  flex: 1; /* take all space beside sidebar */
+  padding: 20px;
+  overflow-y: auto; /* vertical scroll if content grows */
+}
